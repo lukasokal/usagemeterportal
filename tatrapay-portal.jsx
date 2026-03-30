@@ -598,6 +598,105 @@ function NewMeterModal({ onClose }) {
   );
 }
 
+function BillingExportView() {
+  const [period, setPeriod] = useState("2026-03");
+  const [format, setFormat] = useState("CSV");
+
+  const invoiceRows = [
+    { merchant: "TechFlow s.r.o.", meter: "API Calls", unit: "requests", usage: 842_300, rate: "0.0015 €", total: "1 263.45 €", status: "ready" },
+    { merchant: "StreamCore Ltd", meter: "Data Transfer", unit: "GB", usage: 3_840, rate: "0.012 €", total: "46.08 €", status: "ready" },
+    { merchant: "NeuralBit s.r.o.", meter: "AI Inferencie", unit: "calls", usage: 56_100, rate: "0.0014 €", total: "78.54 €", status: "ready" },
+    { merchant: "ComputeHub", meter: "CPU Time", unit: "sekundy", usage: 89_400, rate: "0.0008 €", total: "71.52 €", status: "warning" },
+    { merchant: "DocuMaster AG", meter: "PDF Exporty", unit: "ks", usage: 14_220, rate: "0.002 €", total: "28.44 €", status: "ready" },
+    { merchant: "BookSmart s.r.o.", meter: "Rezervácie", unit: "ks", usage: 2_340, rate: "0.02 €", total: "46.80 €", status: "ready" },
+  ];
+
+  const total = "1 534.83 €";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <SectionHeader
+        title="Billing Export"
+        sub="Podklady pre fakturáciu merchantov"
+        action={
+          <div style={{ display: "flex", gap: 10 }}>
+            <Btn small>Stiahnuť všetko</Btn>
+            <Btn small variant="primary">Exportovať</Btn>
+          </div>
+        }
+      />
+
+      {/* Controls */}
+      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          <label style={{ fontSize: 11, color: "#555", letterSpacing: 1, textTransform: "uppercase" }}>Obdobie</label>
+          <input
+            type="month"
+            value={period}
+            onChange={e => setPeriod(e.target.value)}
+            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "9px 14px", color: "#fff", fontSize: 13, fontFamily: "'DM Sans', sans-serif", outline: "none" }}
+          />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          <label style={{ fontSize: 11, color: "#555", letterSpacing: 1, textTransform: "uppercase" }}>Formát</label>
+          <div style={{ display: "flex", gap: 8 }}>
+            {["CSV", "JSON", "PDF"].map(f => (
+              <button key={f} onClick={() => setFormat(f)} style={{
+                padding: "9px 18px", borderRadius: 8, cursor: "pointer",
+                fontFamily: "'Space Mono', monospace", fontSize: 12,
+                background: format === f ? CYAN : "rgba(255,255,255,0.04)",
+                color: format === f ? "#000" : "#666",
+                border: `1px solid ${format === f ? CYAN : "rgba(255,255,255,0.08)"}`,
+                transition: "all 0.15s",
+              }}>{f}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Summary cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+        <StatCard label="Celkový objem" value={total} sub="6 merchantov · 6 metrov" accent={CYAN2} icon="💶" />
+        <StatCard label="Exporty čakajú" value="6" sub="Pripravené na stiahnutie" icon="📥" />
+        <StatCard label="Fakturačné obdobie" value={period} sub="Mesačný billing cyklus" accent="#7c6fff" icon="📅" />
+      </div>
+
+      {/* Table */}
+      <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1fr 1fr 1fr 90px", gap: 12, padding: "12px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)", fontSize: 11, color: "#444", letterSpacing: 1, textTransform: "uppercase" }}>
+          {["Merchant", "Meter", "Jednotka", "Spotreba", "Sadzba", "Celkom", "Export"].map(h => <span key={h}>{h}</span>)}
+        </div>
+        {invoiceRows.map((r, i) => (
+          <div key={i} style={{
+            display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1fr 1fr 1fr 90px", gap: 12,
+            padding: "14px 20px", borderBottom: "1px solid rgba(255,255,255,0.03)",
+            background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
+            alignItems: "center",
+          }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{r.merchant}</span>
+            <span style={{ fontFamily: "'Space Mono', monospace", color: CYAN, fontSize: 11 }}>{r.meter}</span>
+            <span style={{ color: "#666", fontSize: 12 }}>{r.unit}</span>
+            <span style={{ fontFamily: "'Space Mono', monospace", color: "#ccc", fontSize: 12 }}>{r.usage.toLocaleString()}</span>
+            <span style={{ fontFamily: "'Space Mono', monospace", color: "#888", fontSize: 12 }}>{r.rate}</span>
+            <span style={{ fontFamily: "'Space Mono', monospace", color: CYAN2, fontSize: 13, fontWeight: 700 }}>{r.total}</span>
+            <button style={{
+              background: "transparent", border: `1px solid rgba(0,212,255,0.3)`, color: CYAN,
+              borderRadius: 7, padding: "5px 12px", fontSize: 11, cursor: "pointer",
+              fontFamily: "'DM Sans', sans-serif",
+            }}>{format}</button>
+          </div>
+        ))}
+      </div>
+
+      {/* Total footer */}
+      <div style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.15)", borderRadius: 10, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontSize: 13, color: "#888" }}>Celková fakturovaná suma za obdobie {period}</span>
+        <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 24, fontWeight: 700, color: CYAN }}>{total}</span>
+      </div>
+    </div>
+  );
+}
+
 // ── MAIN APP ───────────────────────────────────────────────────────────────
 const NAV = [
   { id: "dashboard", label: "Dashboard", icon: "◈" },
@@ -606,6 +705,7 @@ const NAV = [
   { id: "pricing", label: "Ceny", icon: "◎" },
   { id: "alerts", label: "Alerty", icon: "△" },
   { id: "merchants", label: "Merchantia", icon: "▣" },
+  { id: "billing", label: "Billing Export", icon: "📥" },
 ];
 
 export default function App() {
@@ -685,6 +785,7 @@ export default function App() {
           {view === "pricing" && <PricingView />}
           {view === "alerts" && <AlertsView />}
           {view === "merchants" && <MerchantsView />}
+          {view === "billing" && <BillingExportView />}
         </div>
       </div>
 
