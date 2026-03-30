@@ -260,7 +260,12 @@ Trigger:
 - Push to `main`
 - Manual dispatch
 
-Required repository secret:
+Deployment behavior:
+
+- If `KUBE_CONFIG_DATA` is configured, the workflow builds the image, pushes it to GHCR, and deploys to Kubernetes.
+- If `KUBE_CONFIG_DATA` is missing, the workflow still builds and pushes the image, then skips the Kubernetes deploy step without failing.
+
+Optional repository secret for Kubernetes deployment:
 
 - `KUBE_CONFIG_DATA`: base64-encoded kubeconfig content.
 
