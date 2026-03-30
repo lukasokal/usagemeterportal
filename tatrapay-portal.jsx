@@ -57,7 +57,7 @@ const MERCHANTS = [
 const CYAN = "#0057B8";
 const CYAN2 = "#1E3A8A";
 const WARN = "#C4930A";
-const DANGER = "#7F0013";
+const DANGER = "#0A2E6E";
 const PIE_COLORS = [CYAN, CYAN2, "#4a4a4a", WARN, "#707070"];
 
 // ── COMPONENTS ─────────────────────────────────────────────────────────────
@@ -108,7 +108,7 @@ function Btn({ children, variant = "ghost", onClick, small, disabled = false }) 
   const styles = {
     primary: { background: CYAN, color: "#fff", border: `1px solid ${CYAN}`, fontWeight: 700 },
     ghost: { background: "transparent", color: CYAN, border: `1px solid rgba(0,87,184,0.3)` },
-    danger: { background: "transparent", color: DANGER, border: `1px solid rgba(255,59,92,0.3)` },
+    danger: { background: "transparent", color: DANGER, border: `1px solid rgba(30,58,138,0.3)` },
   };
   return (
     <button onClick={onClick} disabled={disabled} style={{
@@ -210,10 +210,10 @@ function Dashboard() {
 
       {/* Firing alerts */}
       {ALERTS.filter(a => a.status === "firing").length > 0 && (
-        <div style={{ background: "rgba(255,59,92,0.05)", border: "1px solid rgba(255,59,92,0.2)", borderRadius: 12, padding: 20 }}>
+        <div style={{ background: "rgba(30,58,138,0.05)", border: "1px solid rgba(30,58,138,0.2)", borderRadius: 12, padding: 20 }}>
           <div style={{ fontSize: 13, fontWeight: 700, color: DANGER, marginBottom: 14, letterSpacing: 1 }}>⚠ AKTÍVNE ALERTY</div>
           {ALERTS.filter(a => a.status === "firing").map(a => (
-            <div key={a.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid rgba(255,59,92,0.08)" }}>
+            <div key={a.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid rgba(30,58,138,0.08)" }}>
               <div>
                 <span style={{ color: "#fff", fontWeight: 600 }}>{a.meter}</span>
                 <span style={{ color: "#555", margin: "0 8px" }}>·</span>
@@ -483,7 +483,7 @@ function AlertsView() {
           const pct = a.current;
           const c = pct > 85 ? DANGER : pct > 70 ? WARN : CYAN2;
           return (
-            <div key={a.id} style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${a.status === "firing" ? "rgba(255,59,92,0.25)" : "rgba(255,255,255,0.07)"}`, borderRadius: 12, padding: 22 }}>
+            <div key={a.id} style={{ background: "rgba(255,255,255,0.03)", border: `1px solid ${a.status === "firing" ? "rgba(30,58,138,0.25)" : "rgba(255,255,255,0.07)"}`, borderRadius: 12, padding: 22 }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
