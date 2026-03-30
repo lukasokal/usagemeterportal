@@ -250,3 +250,24 @@ kubectl -n usagemeterportal rollout status deploy/usagemeterportal
 kubectl -n usagemeterportal port-forward svc/usagemeterportal 8080:80
 curl -sSI http://127.0.0.1:8080/ | grep -Ei "content-security-policy|strict-transport-security|x-content-type-options|x-frame-options|referrer-policy|permissions-policy|cross-origin-opener-policy|cross-origin-resource-policy"
 ```
+
+## GitHub Actions CD (GHCR -> Kubernetes)
+
+Workflow file: `.github/workflows/deploy-k8s.yml`
+
+Trigger:
+
+- Push to `main`
+- Manual dispatch
+
+Required repository secret:
+
+- `KUBE_CONFIG_DATA`: base64-encoded kubeconfig content.
+
+How to create `KUBE_CONFIG_DATA`:
+
+```bash
+base64 -w 0 ~/.kube/config
+```
+
+Copy the output into repository secret `KUBE_CONFIG_DATA`.
