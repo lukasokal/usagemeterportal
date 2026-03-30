@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 // ── MOCK DATA ──────────────────────────────────────────────────────────────
@@ -724,6 +724,15 @@ const NAV = [
 export default function App() {
   const [view, setView] = useState("dashboard");
   const [showModal, setShowModal] = useState(false);
+  const [theme, setTheme] = useState(() => {
+    if (typeof window === "undefined") return "light";
+    return localStorage.getItem("tb_theme") || "light";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("tb_theme", theme);
+    document.body.style.background = theme === "dark" ? "#0B1220" : "#F4F8FF";
+  }, [theme]);
 
   return (
     <>
@@ -742,6 +751,8 @@ export default function App() {
           --tb-surface: rgba(11,26,51,0.04);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        .theme-shell { transition: filter 0.25s ease, background 0.25s ease, color 0.25s ease; }
+        .theme-dark { filter: invert(1) hue-rotate(180deg); }
         body {
           background: radial-gradient(circle at 5% 5%, rgba(0,87,184,0.10), rgba(244,248,255,1) 45%), var(--tb-charcoal);
         }
@@ -750,7 +761,7 @@ export default function App() {
         ::-webkit-scrollbar-thumb { background: rgba(0,87,184,0.2); border-radius: 2px; }
         input::placeholder { color: #AFC3E3 !important; }
       `}</style>
-      <div style={{ display: "flex", minHeight: "100vh", background: "#F4F8FF", color: "#0B1A33", fontFamily: "'Tatra banka Sans V1.0', sans-serif" }}>
+      <div className={`theme-shell ${theme === "dark" ? "theme-dark" : ""}`} style={{ display: "flex", minHeight: "100vh", background: "#F4F8FF", color: "#0B1A33", fontFamily: "'Tatra banka Sans V1.0', sans-serif" }}>
         
         {/* Sidebar */}
         <div style={{ width: 220, background: "rgba(11,26,51,0.03)", borderRight: "1px solid rgba(11,26,51,0.12)", display: "flex", flexDirection: "column", padding: "28px 0", position: "fixed", height: "100vh", top: 0, left: 0 }}>
@@ -799,6 +810,21 @@ export default function App() {
         <div style={{ marginLeft: 220, flex: 1, padding: "36px 40px", overflowY: "auto", minHeight: "100vh" }}>
           {/* Topbar */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 36, gap: 12 }}>
+            <button
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              style={{
+                background: "transparent",
+                border: "1px solid rgba(11,26,51,0.16)",
+                borderRadius: 8,
+                padding: "7px 12px",
+                color: "#0B1A33",
+                cursor: "pointer",
+                fontSize: 12,
+                fontFamily: "'Tatra banka Sans V1.0', sans-serif",
+              }}
+            >
+              {theme === "dark" ? "Light mode" : "Dark mode"}
+            </button>
             <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(0,87,184,0.08)", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, padding: "7px 14px" }}>
               <div style={{ width: 6, height: 6, borderRadius: "50%", background: CYAN2, boxShadow: `0 0 8px ${CYAN2}` }} />
               <span style={{ fontSize: 12, color: CYAN2 }}>Systém online</span>
