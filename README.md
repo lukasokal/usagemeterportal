@@ -208,3 +208,45 @@ curl -sSI http://localhost:8080/ | grep -Ei "content-security-policy|strict-tran
 2. Push image to your registry.
 3. Deploy to your orchestrator (Kubernetes, ECS, or similar) and expose over HTTPS.
 4. Ensure TLS termination is enabled in front of the container.
+
+## Kubernetes Deployment (Production)
+
+Kubernetes manifests are in `k8s/` and include:
+
+- Namespace
+- Deployment (2 replicas, probes, hardened container security context)
+- Service (ClusterIP)
+- Ingress (TLS + redirect + HSTS)
+
+### 1. Build and push image
+
+```bash
+export IMAGE=ghcr.io/lukasokal/usagemeterportal:$(git rev-parse --short HEAD)
+docker build -t "$IMAGE" .
+docker push "$IMAGE"
+```
+
+### 2. Set your image tag in deployment
+
+Update the image field in `k8s/deployment.yaml` to your pushed tag.
+
+### 3. Set your production hostname and TLS secret
+
+Update these fields in `k8s/ingress.yaml`:
+
+- host: `usagemeterportal.example.com`
+- secretName: `usagemeterportal-tls`
+
+### 4. Deploy
+
+```bash
+kubectl apply -k k8s
+kubectl -n usagemeterportal rollout status deploy/usagemeterportal
+```
+
+### 5. Verify runtime headers in cluster
+
+```bash
+kubectl -n usagemeterportal port-forward svc/usagemeterportal 8080:80
+curl -sSI http://127.0.0.1:8080/ | grep -Ei "content-security-policy|strict-transport-security|x-content-type-options|x-frame-options|referrer-policy|permissions-policy|cross-origin-opener-policy|cross-origin-resource-policy"
+```
