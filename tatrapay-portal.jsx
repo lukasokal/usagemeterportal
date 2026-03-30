@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 // ── MOCK DATA ──────────────────────────────────────────────────────────────
@@ -104,19 +104,20 @@ function SectionHeader({ title, sub, action }) {
   );
 }
 
-function Btn({ children, variant = "ghost", onClick, small }) {
+function Btn({ children, variant = "ghost", onClick, small, disabled = false }) {
   const styles = {
     primary: { background: CYAN, color: "#000", border: `1px solid ${CYAN}`, fontWeight: 700 },
     ghost: { background: "transparent", color: CYAN, border: `1px solid rgba(0,212,255,0.3)` },
     danger: { background: "transparent", color: DANGER, border: `1px solid rgba(255,59,92,0.3)` },
   };
   return (
-    <button onClick={onClick} style={{
+    <button onClick={onClick} disabled={disabled} style={{
       ...styles[variant],
       borderRadius: 8,
       padding: small ? "6px 14px" : "9px 20px",
       fontSize: small ? 12 : 13,
-      cursor: "pointer",
+      cursor: disabled ? "not-allowed" : "pointer",
+      opacity: disabled ? 0.55 : 1,
       fontFamily: "'DM Sans', sans-serif",
       letterSpacing: 0.3,
       transition: "all 0.15s",
@@ -555,11 +556,23 @@ function MerchantsView() {
 
 function NewMeterModal({ onClose }) {
   const [form, setForm] = useState({ name: "", event_name: "", aggregation: "COUNT", unit: "", limit: "" });
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const sanitizeText = (value, max = 64) => value.replace(/[\u0000-\u001F\u007F]/g, "").slice(0, max);
+  const sanitizeEventName = (value) => value.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 64);
+  const sanitizeLimit = (value) => value.replace(/[^0-9]/g, "").slice(0, 12);
+  const set = (k, v) => {
+    const normalized =
+      k === "event_name"
+        ? sanitizeEventName(v)
+        : k === "limit"
+          ? sanitizeLimit(v)
+          : sanitizeText(v);
+    setForm(f => ({ ...f, [k]: normalized }));
+  };
+  const canCreate = form.name.trim() && form.event_name.trim() && form.unit.trim();
   const inp = (label, key, placeholder) => (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <label style={{ fontSize: 11, color: "#555", letterSpacing: 1, textTransform: "uppercase" }}>{label}</label>
-      <input value={form[key]} onChange={e => set(key, e.target.value)} placeholder={placeholder}
+      <input value={form[key]} onChange={e => set(key, e.target.value)} placeholder={placeholder} maxLength={key === "limit" ? 12 : 64}
         style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "10px 14px", color: "#fff", fontSize: 13, fontFamily: "'DM Sans', sans-serif", outline: "none" }} />
     </div>
   );
@@ -590,7 +603,7 @@ function NewMeterModal({ onClose }) {
           {inp("Limit (voliteľné)", "limit", "napr. 1000000")}
         </div>
         <div style={{ display: "flex", gap: 12, marginTop: 28 }}>
-          <Btn variant="primary" onClick={onClose}>Vytvoriť meter</Btn>
+          <Btn variant="primary" onClick={onClose} disabled={!canCreate}>Vytvoriť meter</Btn>
           <Btn onClick={onClose}>Zrušiť</Btn>
         </div>
       </div>
@@ -714,7 +727,6 @@ export default function App() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
       <style>{`
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { background: #060b14; }

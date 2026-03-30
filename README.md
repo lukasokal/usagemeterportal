@@ -171,3 +171,40 @@ Ak chceš, dopracujem ešte:
 ✅ API špecifikáciu /usage-events, /meters, /prices
 ✅ návrh databázových tabuliek
 ✅ návrh UI pre merchant admin
+
+## Production Deployment (Container + Nginx)
+
+This repository now includes a production container image for static deployment with hardened HTTP headers.
+
+### Build and run locally
+
+```bash
+npm run docker:build
+npm run docker:run
+```
+
+App is served on `http://localhost:8080`.
+
+### Security headers enforced at server level
+
+- Content-Security-Policy
+- Strict-Transport-Security
+- X-Content-Type-Options
+- X-Frame-Options
+- Referrer-Policy
+- Permissions-Policy
+- Cross-Origin-Opener-Policy
+- Cross-Origin-Resource-Policy
+
+### Verify headers
+
+```bash
+curl -sSI http://localhost:8080/ | grep -Ei "content-security-policy|strict-transport-security|x-content-type-options|x-frame-options|referrer-policy|permissions-policy|cross-origin-opener-policy|cross-origin-resource-policy"
+```
+
+### Deploy to production
+
+1. Build container image in CI using `Dockerfile`.
+2. Push image to your registry.
+3. Deploy to your orchestrator (Kubernetes, ECS, or similar) and expose over HTTPS.
+4. Ensure TLS termination is enabled in front of the container.
