@@ -48,28 +48,31 @@ jobs:
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v4
-
-      - name: Check deployment secret
-        id: kube-config
+      - name: Check for KUBE_CONFIG_DATA
+        id: check-kube-config
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG_DATA }}
         run: |
-          if [ -n "${{ secrets.KUBE_CONFIG_DATA }}" ]; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
+          if [ -n "$KUBE_CONFIG" ]; then
+            echo "has_kube_config=true" >> "$GITHUB_OUTPUT"
           else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "KUBE_CONFIG_DATA is not configured; skipping Kubernetes deployment."
+            echo "has_kube_config=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::KUBE_CONFIG_DATA secret not configured — skipping Kubernetes deployment"
           fi
 
+      - name: Set up kubectl
+        if: steps.check-kube-config.outputs.has_kube_config == 'true'
+        uses: azure/setup-kubectl@v4
+
       - name: Configure kubeconfig
-        if: steps.kube-config.outputs.available == 'true'
+        if: steps.check-kube-config.outputs.has_kube_config == 'true'
         run: |
           mkdir -p "$HOME/.kube"
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
 
       - name: Deploy manifests
-        if: steps.kube-config.outputs.available == 'true'
+        if: steps.check-kube-config.outputs.has_kube_config == 'true'
         run: |
           kubectl apply -k k8s
           kubectl -n "${K8S_NAMESPACE}" set image deployment/usagemeterportal usagemeterportal="${REGISTRY}/${IMAGE_NAME}:${GITHUB_SHA}"
