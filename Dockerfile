@@ -11,6 +11,7 @@ RUN npm run build
 FROM nginxinc/nginx-unprivileged:stable-alpine AS runtime
 
 # Replace default server config with hardened SPA config.
+COPY nginx/security-headers.conf /etc/nginx/security-headers.conf
 COPY nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
