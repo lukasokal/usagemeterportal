@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 
 // ── MOCK DATA ──────────────────────────────────────────────────────────────
@@ -54,11 +54,11 @@ const MERCHANTS = [
   { id: "mer5", name: "ComputeHub", meters: 1, events_today: 31_000, plan: "Enterprise" },
 ];
 
-const CYAN = "#00d4ff";
-const CYAN2 = "#00ffc8";
-const WARN = "#ffb800";
-const DANGER = "#ff3b5c";
-const PIE_COLORS = [CYAN, CYAN2, "#7c6fff", WARN, "#ff6e3a"];
+const CYAN = "#0057B8";
+const CYAN2 = "#1E3A8A";
+const WARN = "#C4930A";
+const DANGER = "#7F0013";
+const PIE_COLORS = [CYAN, CYAN2, "#4a4a4a", WARN, "#707070"];
 
 // ── COMPONENTS ─────────────────────────────────────────────────────────────
 function StatusDot({ status }) {
@@ -85,7 +85,7 @@ function StatCard({ label, value, sub, accent = CYAN, icon }) {
     }}>
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: 2, background: accent, opacity: 0.8 }} />
       <div style={{ fontSize: 11, color: "#666", letterSpacing: 2, textTransform: "uppercase", marginBottom: 10 }}>{label}</div>
-      <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 28, fontWeight: 700, color: "#fff", lineHeight: 1 }}>{value}</div>
+      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 28, fontWeight: 700, color: "#fff", lineHeight: 1 }}>{value}</div>
       {sub && <div style={{ fontSize: 12, color: "#555", marginTop: 8 }}>{sub}</div>}
       {icon && <div style={{ position: "absolute", bottom: 16, right: 20, fontSize: 28, opacity: 0.12 }}>{icon}</div>}
     </div>
@@ -96,7 +96,7 @@ function SectionHeader({ title, sub, action }) {
   return (
     <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 20 }}>
       <div>
-        <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", fontFamily: "'Syne', sans-serif" }}>{title}</div>
+        <div style={{ fontSize: 18, fontWeight: 700, color: "#fff", fontFamily: "'Manrope', sans-serif" }}>{title}</div>
         {sub && <div style={{ fontSize: 12, color: "#555", marginTop: 3 }}>{sub}</div>}
       </div>
       {action}
@@ -104,20 +104,21 @@ function SectionHeader({ title, sub, action }) {
   );
 }
 
-function Btn({ children, variant = "ghost", onClick, small }) {
+function Btn({ children, variant = "ghost", onClick, small, disabled = false }) {
   const styles = {
-    primary: { background: CYAN, color: "#000", border: `1px solid ${CYAN}`, fontWeight: 700 },
-    ghost: { background: "transparent", color: CYAN, border: `1px solid rgba(0,212,255,0.3)` },
+    primary: { background: CYAN, color: "#fff", border: `1px solid ${CYAN}`, fontWeight: 700 },
+    ghost: { background: "transparent", color: CYAN, border: `1px solid rgba(0,87,184,0.3)` },
     danger: { background: "transparent", color: DANGER, border: `1px solid rgba(255,59,92,0.3)` },
   };
   return (
-    <button onClick={onClick} style={{
+    <button onClick={onClick} disabled={disabled} style={{
       ...styles[variant],
       borderRadius: 8,
       padding: small ? "6px 14px" : "9px 20px",
       fontSize: small ? 12 : 13,
-      cursor: "pointer",
-      fontFamily: "'DM Sans', sans-serif",
+      cursor: disabled ? "not-allowed" : "pointer",
+      opacity: disabled ? 0.55 : 1,
+      fontFamily: "'IBM Plex Sans', sans-serif",
       letterSpacing: 0.3,
       transition: "all 0.15s",
     }}>{children}</button>
@@ -148,7 +149,7 @@ function Dashboard() {
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
       <div>
-        <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>
+        <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 24, fontWeight: 800, color: "#fff" }}>
           Prehľad systému
         </div>
         <div style={{ color: "#444", fontSize: 13, marginTop: 4 }}>Posledná aktualizácia: práve teraz · 30. marca 2026</div>
@@ -159,7 +160,7 @@ function Dashboard() {
         <StatCard label="Aktívne metre" value="6" sub="5 merchantov" icon="📊" />
         <StatCard label="Eventy dnes" value="24 100" sub="+12% vs včera" accent={CYAN2} icon="⚡" />
         <StatCard label="Aktívne alerty" value="2" sub="Kritické limity" accent={DANGER} icon="🔔" />
-        <StatCard label="Merchantov" value="5" sub="2× Enterprise" accent="#7c6fff" icon="🏢" />
+        <StatCard label="Merchantov" value="5" sub="2× Enterprise" accent="#4a4a4a" icon="🏢" />
       </div>
 
       {/* Charts row */}
@@ -177,7 +178,7 @@ function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
               <XAxis dataKey="day" tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ background: "#0d1420", border: "1px solid rgba(0,212,255,0.2)", borderRadius: 8, color: "#fff" }} />
+              <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, color: "#fff" }} />
               <Area type="monotone" dataKey="events" stroke={CYAN} strokeWidth={2} fill="url(#evGrad)" />
             </AreaChart>
           </ResponsiveContainer>
@@ -190,7 +191,7 @@ function Dashboard() {
               <Pie data={PIE_DATA} cx="50%" cy="50%" innerRadius={45} outerRadius={72} paddingAngle={3} dataKey="value">
                 {PIE_DATA.map((_, i) => <Cell key={i} fill={PIE_COLORS[i]} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: "#0d1420", border: "1px solid rgba(0,212,255,0.2)", borderRadius: 8, color: "#fff" }} />
+              <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, color: "#fff" }} />
             </PieChart>
           </ResponsiveContainer>
           <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
@@ -200,7 +201,7 @@ function Dashboard() {
                   <div style={{ width: 8, height: 8, borderRadius: 2, background: PIE_COLORS[i] }} />
                   <span style={{ color: "#888" }}>{d.name}</span>
                 </div>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#ccc" }}>{d.value.toLocaleString()}</span>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#ccc" }}>{d.value.toLocaleString()}</span>
               </div>
             ))}
           </div>
@@ -219,7 +220,7 @@ function Dashboard() {
                 <span style={{ color: "#888", fontSize: 13 }}>{a.merchant}</span>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, color: DANGER }}>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: DANGER }}>
                   {a.current}% / {a.threshold}% threshold
                 </div>
                 <ProgressBar value={a.current} max={100} />
@@ -235,7 +236,7 @@ function Dashboard() {
         <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
           {EVENTS.slice(0, 5).map(e => (
             <div key={e.id} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 80px 80px", gap: 12, padding: "10px 0", borderBottom: "1px solid rgba(255,255,255,0.04)", fontSize: 12 }}>
-              <span style={{ fontFamily: "'Space Mono', monospace", color: CYAN }}>{e.event_name}</span>
+              <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: CYAN }}>{e.event_name}</span>
               <span style={{ color: "#666" }}>{e.customer_id}</span>
               <span style={{ color: "#555" }}>{e.timestamp.replace("T", " ").replace("Z", "")}</span>
               <span style={{ color: "#888" }}>{e.meter}</span>
@@ -264,14 +265,14 @@ function MetersView({ onNewMeter }) {
           return (
             <div key={m.id} onClick={() => setSelected(m.id === selected ? null : m.id)}
               style={{
-                background: selected === m.id ? "rgba(0,212,255,0.06)" : "rgba(255,255,255,0.03)",
-                border: `1px solid ${selected === m.id ? "rgba(0,212,255,0.3)" : "rgba(255,255,255,0.07)"}`,
+                background: selected === m.id ? "rgba(0,87,184,0.06)" : "rgba(255,255,255,0.03)",
+                border: `1px solid ${selected === m.id ? "rgba(0,87,184,0.3)" : "rgba(255,255,255,0.07)"}`,
                 borderRadius: 12, padding: 22, cursor: "pointer", transition: "all 0.2s"
               }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
                 <div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", fontFamily: "'Syne', sans-serif" }}>{m.name}</div>
-                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#555", marginTop: 3 }}>{m.event_name}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: "#fff", fontFamily: "'Manrope', sans-serif" }}>{m.name}</div>
+                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#555", marginTop: 3 }}>{m.event_name}</div>
                 </div>
                 <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                   <Tag text={m.aggregation} color={m.aggregation === "SUM" ? CYAN2 : CYAN} />
@@ -281,13 +282,13 @@ function MetersView({ onNewMeter }) {
               <div style={{ marginBottom: 10 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                   <span style={{ fontSize: 11, color: "#555" }}>Využitie</span>
-                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: c }}>{pct}%</span>
+                  <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: c }}>{pct}%</span>
                 </div>
                 <ProgressBar value={m.usage} max={m.limit} />
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11 }}>
                 <span style={{ color: "#555" }}>{m.merchant}</span>
-                <span style={{ fontFamily: "'Space Mono', monospace", color: "#888" }}>
+                <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#888" }}>
                   {m.usage.toLocaleString()} / {m.limit.toLocaleString()} {m.unit}
                 </span>
               </div>
@@ -298,7 +299,7 @@ function MetersView({ onNewMeter }) {
                     {[["Merchant", m.merchant], ["Aggregation", m.aggregation], ["Unit", m.unit], ["Vytvorený", m.created]].map(([k, v]) => (
                       <div key={k}>
                         <div style={{ color: "#555", marginBottom: 3 }}>{k}</div>
-                        <div style={{ color: "#ccc", fontFamily: "'Space Mono', monospace" }}>{v}</div>
+                        <div style={{ color: "#ccc", fontFamily: "'IBM Plex Mono', monospace" }}>{v}</div>
                       </div>
                     ))}
                   </div>
@@ -329,7 +330,7 @@ function EventsView() {
             color: filter === f ? "#000" : "#666",
             border: `1px solid ${filter === f ? CYAN : "rgba(255,255,255,0.1)"}`,
             borderRadius: 7, padding: "7px 16px", fontSize: 12, cursor: "pointer",
-            fontFamily: "'DM Sans', sans-serif", transition: "all 0.15s",
+            fontFamily: "'IBM Plex Sans', sans-serif", transition: "all 0.15s",
           }}>{f === "all" ? "Všetky" : f}</button>
         ))}
         <div style={{ marginLeft: "auto", display: "flex", gap: 10 }}>
@@ -349,9 +350,9 @@ function EventsView() {
             background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
             fontSize: 12, alignItems: "center"
           }}>
-            <span style={{ fontFamily: "'Space Mono', monospace", color: CYAN, fontSize: 11 }}>{e.event_name}</span>
-            <span style={{ fontFamily: "'Space Mono', monospace", color: "#777", fontSize: 11 }}>{e.customer_id}</span>
-            <span style={{ fontFamily: "'Space Mono', monospace", color: "#ccc" }}>{e.value}</span>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: CYAN, fontSize: 11 }}>{e.event_name}</span>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#777", fontSize: 11 }}>{e.customer_id}</span>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#ccc" }}>{e.value}</span>
             <span style={{ color: "#555", fontSize: 11 }}>{e.timestamp.replace("T", " ").replace("Z", "")}</span>
             <span style={{ color: "#888" }}>{e.meter}</span>
             <span><StatusDot status={e.status} /><span style={{ color: e.status === "processed" ? "#999" : DANGER }}>{e.status}</span></span>
@@ -367,7 +368,7 @@ function EventsView() {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
             <XAxis dataKey="day" tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip contentStyle={{ background: "#0d1420", border: "1px solid rgba(0,212,255,0.2)", borderRadius: 8, color: "#fff" }} />
+            <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, color: "#fff" }} />
             <Bar dataKey="events" fill={CYAN} radius={[4, 4, 0, 0]} opacity={0.8} />
           </BarChart>
         </ResponsiveContainer>
@@ -390,16 +391,16 @@ function PricingView() {
         {/* Tiered pricing */}
         <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: 24 }}>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Syne', sans-serif" }}>API Calls – Stupňovaná cena</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Manrope', sans-serif" }}>API Calls – Stupňovaná cena</div>
             <div style={{ fontSize: 12, color: "#555", marginTop: 4 }}>TechFlow s.r.o. · COUNT aggregation</div>
           </div>
           {tiers.map((t, i) => (
             <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 8, background: i === 0 ? "rgba(0,255,200,0.06)" : "transparent", marginBottom: 4 }}>
               <div>
                 <div style={{ fontSize: 11, color: "#888" }}>{t.label}</div>
-                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#555" }}>{t.from.toLocaleString()} – {typeof t.to === "number" ? t.to.toLocaleString() : t.to}</div>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#555" }}>{t.from.toLocaleString()} – {typeof t.to === "number" ? t.to.toLocaleString() : t.to}</div>
               </div>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 16, fontWeight: 700, color: i === 0 ? CYAN2 : "#fff" }}>{t.price}</div>
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 16, fontWeight: 700, color: i === 0 ? CYAN2 : "#fff" }}>{t.price}</div>
             </div>
           ))}
           <div style={{ marginTop: 16, display: "flex", gap: 10 }}>
@@ -410,18 +411,18 @@ function PricingView() {
         {/* Pay as you go */}
         <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: 24 }}>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Syne', sans-serif" }}>Data Transfer – Pay-as-you-go</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Manrope', sans-serif" }}>Data Transfer – Pay-as-you-go</div>
             <div style={{ fontSize: 12, color: "#555", marginTop: 4 }}>StreamCore Ltd · SUM aggregation</div>
           </div>
-          <div style={{ background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.1)", borderRadius: 10, padding: 20, textAlign: "center" }}>
+          <div style={{ background: "rgba(0,87,184,0.04)", border: "1px solid rgba(0,87,184,0.1)", borderRadius: 10, padding: 20, textAlign: "center" }}>
             <div style={{ fontSize: 11, color: "#555", marginBottom: 8 }}>Cena za GB</div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 36, fontWeight: 700, color: CYAN }}>0.012 €</div>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 36, fontWeight: 700, color: CYAN }}>0.012 €</div>
             <div style={{ fontSize: 11, color: "#444", marginTop: 8 }}>bez limitu · žiadny free tier</div>
           </div>
           <div style={{ marginTop: 16, padding: "12px 16px", background: "rgba(255,255,255,0.02)", borderRadius: 8 }}>
             <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
               <span style={{ color: "#666" }}>Tento mesiac (3 840 GB)</span>
-              <span style={{ fontFamily: "'Space Mono', monospace", color: "#fff" }}>46.08 €</span>
+              <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#fff" }}>46.08 €</span>
             </div>
           </div>
           <div style={{ marginTop: 12, display: "flex", gap: 10 }}>
@@ -432,7 +433,7 @@ function PricingView() {
         {/* Credits model */}
         <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: 24 }}>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Syne', sans-serif" }}>AI Inferencie – Kreditový model</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Manrope', sans-serif" }}>AI Inferencie – Kreditový model</div>
             <div style={{ fontSize: 12, color: "#555", marginTop: 4 }}>NeuralBit s.r.o. · COUNT aggregation</div>
           </div>
           {[
@@ -440,12 +441,12 @@ function PricingView() {
             { pack: "Growth", credits: "50 000", price: "79 €", highlight: true },
             { pack: "Scale", credits: "200 000", price: "249 €", highlight: false },
           ].map((p, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 8, background: p.highlight ? "rgba(0,212,255,0.08)" : "transparent", border: p.highlight ? `1px solid rgba(0,212,255,0.2)` : "1px solid transparent", marginBottom: 6 }}>
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 8, background: p.highlight ? "rgba(0,87,184,0.08)" : "transparent", border: p.highlight ? `1px solid rgba(0,87,184,0.2)` : "1px solid transparent", marginBottom: 6 }}>
               <div>
                 <div style={{ fontSize: 12, color: p.highlight ? CYAN : "#ccc" }}>{p.pack}</div>
-                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#555" }}>{p.credits} kreditov</div>
+                <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#555" }}>{p.credits} kreditov</div>
               </div>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 16, fontWeight: 700, color: p.highlight ? CYAN : "#fff" }}>{p.price}</div>
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 16, fontWeight: 700, color: p.highlight ? CYAN : "#fff" }}>{p.price}</div>
             </div>
           ))}
         </div>
@@ -453,17 +454,17 @@ function PricingView() {
         {/* Fixed fee */}
         <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: 24 }}>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Syne', sans-serif" }}>Rezervácie – Subscription + Usage</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Manrope', sans-serif" }}>Rezervácie – Subscription + Usage</div>
             <div style={{ fontSize: 12, color: "#555", marginTop: 4 }}>BookSmart s.r.o. · Hybridný model</div>
           </div>
           <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
             <div style={{ flex: 1, background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: 16, textAlign: "center" }}>
               <div style={{ fontSize: 11, color: "#555", marginBottom: 6 }}>Mesačný paušál</div>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 22, color: "#fff" }}>29 €</div>
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, color: "#fff" }}>29 €</div>
             </div>
-            <div style={{ flex: 1, background: "rgba(0,212,255,0.04)", border: "1px solid rgba(0,212,255,0.1)", borderRadius: 8, padding: 16, textAlign: "center" }}>
+            <div style={{ flex: 1, background: "rgba(0,87,184,0.04)", border: "1px solid rgba(0,87,184,0.1)", borderRadius: 8, padding: 16, textAlign: "center" }}>
               <div style={{ fontSize: 11, color: "#555", marginBottom: 6 }}>Nad 1 000 ks</div>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 22, color: CYAN }}>0.02 €/ks</div>
+              <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, color: CYAN }}>0.02 €/ks</div>
             </div>
           </div>
           <div style={{ fontSize: 11, color: "#444" }}>Prvých 1 000 rezervácií v cene. Každá ďalšia sa fakturuje osobitne.</div>
@@ -486,13 +487,13 @@ function AlertsView() {
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                    <span style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Syne', sans-serif" }}>{a.meter}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Manrope', sans-serif" }}>{a.meter}</span>
                     <Tag text={a.status === "firing" ? "FIRING" : "OK"} color={a.status === "firing" ? DANGER : CYAN2} />
                   </div>
                   <div style={{ fontSize: 12, color: "#555" }}>{a.merchant}</div>
                 </div>
                 <div style={{ textAlign: "right" }}>
-                  <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 28, fontWeight: 700, color: c }}>{a.current}%</div>
+                  <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 28, fontWeight: 700, color: c }}>{a.current}%</div>
                   <div style={{ fontSize: 11, color: "#444" }}>threshold: {a.threshold}%</div>
                 </div>
               </div>
@@ -514,7 +515,7 @@ function AlertsView() {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
             <XAxis dataKey="day" tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip contentStyle={{ background: "#0d1420", border: "1px solid rgba(0,212,255,0.2)", borderRadius: 8, color: "#fff" }} />
+            <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, color: "#fff" }} />
             <Line type="monotone" dataKey="volume" stroke={WARN} strokeWidth={2} dot={false} name="CPU Time" />
             <Line type="monotone" dataKey="threshold" stroke={DANGER} strokeWidth={1} strokeDasharray="5 5" dot={false} name="Threshold" />
           </LineChart>
@@ -542,8 +543,8 @@ function MerchantsView() {
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{m.name}</div>
             </div>
-            <div style={{ fontFamily: "'Space Mono', monospace", color: CYAN, fontSize: 13 }}>{m.meters}</div>
-            <div style={{ fontFamily: "'Space Mono', monospace", color: "#ccc", fontSize: 13 }}>{m.events_today.toLocaleString()}</div>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: CYAN, fontSize: 13 }}>{m.meters}</div>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#ccc", fontSize: 13 }}>{m.events_today.toLocaleString()}</div>
             <Tag text={m.plan} color={m.plan === "Enterprise" ? CYAN2 : m.plan === "Pro" ? CYAN : "#888"} />
             <Btn small>Detail</Btn>
           </div>
@@ -555,19 +556,31 @@ function MerchantsView() {
 
 function NewMeterModal({ onClose }) {
   const [form, setForm] = useState({ name: "", event_name: "", aggregation: "COUNT", unit: "", limit: "" });
-  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const sanitizeText = (value, max = 64) => value.replace(/[\u0000-\u001F\u007F]/g, "").slice(0, max);
+  const sanitizeEventName = (value) => value.toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 64);
+  const sanitizeLimit = (value) => value.replace(/[^0-9]/g, "").slice(0, 12);
+  const set = (k, v) => {
+    const normalized =
+      k === "event_name"
+        ? sanitizeEventName(v)
+        : k === "limit"
+          ? sanitizeLimit(v)
+          : sanitizeText(v);
+    setForm(f => ({ ...f, [k]: normalized }));
+  };
+  const canCreate = form.name.trim() && form.event_name.trim() && form.unit.trim();
   const inp = (label, key, placeholder) => (
     <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
       <label style={{ fontSize: 11, color: "#555", letterSpacing: 1, textTransform: "uppercase" }}>{label}</label>
-      <input value={form[key]} onChange={e => set(key, e.target.value)} placeholder={placeholder}
-        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "10px 14px", color: "#fff", fontSize: 13, fontFamily: "'DM Sans', sans-serif", outline: "none" }} />
+      <input value={form[key]} onChange={e => set(key, e.target.value)} placeholder={placeholder} maxLength={key === "limit" ? 12 : 64}
+        style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "10px 14px", color: "#fff", fontSize: 13, fontFamily: "'IBM Plex Sans', sans-serif", outline: "none" }} />
     </div>
   );
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(6px)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ background: "#0d1420", border: "1px solid rgba(0,212,255,0.2)", borderRadius: 16, padding: 36, width: 480, position: "relative" }}>
+      <div style={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 16, padding: 36, width: 480, position: "relative" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${CYAN}, ${CYAN2})`, borderRadius: "16px 16px 0 0" }} />
-        <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", fontFamily: "'Syne', sans-serif", marginBottom: 4 }}>Nový meter</div>
+        <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", fontFamily: "'Manrope', sans-serif", marginBottom: 4 }}>Nový meter</div>
         <div style={{ fontSize: 12, color: "#555", marginBottom: 28 }}>Definujte metriku pre fakturáciu</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {inp("Názov metra", "name", "napr. PDF Exporty")}
@@ -577,7 +590,7 @@ function NewMeterModal({ onClose }) {
             <div style={{ display: "flex", gap: 10 }}>
               {["COUNT", "SUM"].map(a => (
                 <button key={a} onClick={() => set("aggregation", a)} style={{
-                  flex: 1, padding: "10px 0", borderRadius: 8, cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 13,
+                  flex: 1, padding: "10px 0", borderRadius: 8, cursor: "pointer", fontFamily: "'IBM Plex Mono', monospace", fontSize: 13,
                   background: form.aggregation === a ? CYAN : "rgba(255,255,255,0.04)",
                   color: form.aggregation === a ? "#000" : "#666",
                   border: `1px solid ${form.aggregation === a ? CYAN : "rgba(255,255,255,0.08)"}`,
@@ -590,9 +603,108 @@ function NewMeterModal({ onClose }) {
           {inp("Limit (voliteľné)", "limit", "napr. 1000000")}
         </div>
         <div style={{ display: "flex", gap: 12, marginTop: 28 }}>
-          <Btn variant="primary" onClick={onClose}>Vytvoriť meter</Btn>
+          <Btn variant="primary" onClick={onClose} disabled={!canCreate}>Vytvoriť meter</Btn>
           <Btn onClick={onClose}>Zrušiť</Btn>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function BillingExportView() {
+  const [period, setPeriod] = useState("2026-03");
+  const [format, setFormat] = useState("CSV");
+
+  const invoiceRows = [
+    { merchant: "TechFlow s.r.o.", meter: "API Calls", unit: "requests", usage: 842_300, rate: "0.0015 €", total: "1 263.45 €", status: "ready" },
+    { merchant: "StreamCore Ltd", meter: "Data Transfer", unit: "GB", usage: 3_840, rate: "0.012 €", total: "46.08 €", status: "ready" },
+    { merchant: "NeuralBit s.r.o.", meter: "AI Inferencie", unit: "calls", usage: 56_100, rate: "0.0014 €", total: "78.54 €", status: "ready" },
+    { merchant: "ComputeHub", meter: "CPU Time", unit: "sekundy", usage: 89_400, rate: "0.0008 €", total: "71.52 €", status: "warning" },
+    { merchant: "DocuMaster AG", meter: "PDF Exporty", unit: "ks", usage: 14_220, rate: "0.002 €", total: "28.44 €", status: "ready" },
+    { merchant: "BookSmart s.r.o.", meter: "Rezervácie", unit: "ks", usage: 2_340, rate: "0.02 €", total: "46.80 €", status: "ready" },
+  ];
+
+  const total = "1 534.83 €";
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
+      <SectionHeader
+        title="Billing Export"
+        sub="Podklady pre fakturáciu merchantov"
+        action={
+          <div style={{ display: "flex", gap: 10 }}>
+            <Btn small>Stiahnuť všetko</Btn>
+            <Btn small variant="primary">Exportovať</Btn>
+          </div>
+        }
+      />
+
+      {/* Controls */}
+      <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          <label style={{ fontSize: 11, color: "#555", letterSpacing: 1, textTransform: "uppercase" }}>Obdobie</label>
+          <input
+            type="month"
+            value={period}
+            onChange={e => setPeriod(e.target.value)}
+            style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, padding: "9px 14px", color: "#fff", fontSize: 13, fontFamily: "'IBM Plex Sans', sans-serif", outline: "none" }}
+          />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+          <label style={{ fontSize: 11, color: "#555", letterSpacing: 1, textTransform: "uppercase" }}>Formát</label>
+          <div style={{ display: "flex", gap: 8 }}>
+            {["CSV", "JSON", "PDF"].map(f => (
+              <button key={f} onClick={() => setFormat(f)} style={{
+                padding: "9px 18px", borderRadius: 8, cursor: "pointer",
+                fontFamily: "'IBM Plex Mono', monospace", fontSize: 12,
+                background: format === f ? CYAN : "rgba(255,255,255,0.04)",
+                color: format === f ? "#000" : "#666",
+                border: `1px solid ${format === f ? CYAN : "rgba(255,255,255,0.08)"}`,
+                transition: "all 0.15s",
+              }}>{f}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Summary cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
+        <StatCard label="Celkový objem" value={total} sub="6 merchantov · 6 metrov" accent={CYAN2} icon="💶" />
+        <StatCard label="Exporty čakajú" value="6" sub="Pripravené na stiahnutie" icon="📥" />
+        <StatCard label="Fakturačné obdobie" value={period} sub="Mesačný billing cyklus" accent="#4a4a4a" icon="📅" />
+      </div>
+
+      {/* Table */}
+      <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 12, overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1fr 1fr 1fr 90px", gap: 12, padding: "12px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)", fontSize: 11, color: "#444", letterSpacing: 1, textTransform: "uppercase" }}>
+          {["Merchant", "Meter", "Jednotka", "Spotreba", "Sadzba", "Celkom", "Export"].map(h => <span key={h}>{h}</span>)}
+        </div>
+        {invoiceRows.map((r, i) => (
+          <div key={i} style={{
+            display: "grid", gridTemplateColumns: "2fr 1.5fr 1fr 1fr 1fr 1fr 90px", gap: 12,
+            padding: "14px 20px", borderBottom: "1px solid rgba(255,255,255,0.03)",
+            background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
+            alignItems: "center",
+          }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>{r.merchant}</span>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: CYAN, fontSize: 11 }}>{r.meter}</span>
+            <span style={{ color: "#666", fontSize: 12 }}>{r.unit}</span>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#ccc", fontSize: 12 }}>{r.usage.toLocaleString()}</span>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#888", fontSize: 12 }}>{r.rate}</span>
+            <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: CYAN2, fontSize: 13, fontWeight: 700 }}>{r.total}</span>
+            <button style={{
+              background: "transparent", border: `1px solid rgba(0,87,184,0.3)`, color: CYAN,
+              borderRadius: 7, padding: "5px 12px", fontSize: 11, cursor: "pointer",
+              fontFamily: "'IBM Plex Sans', sans-serif",
+            }}>{format}</button>
+          </div>
+        ))}
+      </div>
+
+      {/* Total footer */}
+      <div style={{ background: "rgba(0,87,184,0.04)", border: "1px solid rgba(0,87,184,0.15)", borderRadius: 10, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <span style={{ fontSize: 13, color: "#888" }}>Celková fakturovaná suma za obdobie {period}</span>
+        <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 24, fontWeight: 700, color: CYAN }}>{total}</span>
       </div>
     </div>
   );
@@ -606,6 +718,7 @@ const NAV = [
   { id: "pricing", label: "Ceny", icon: "◎" },
   { id: "alerts", label: "Alerty", icon: "△" },
   { id: "merchants", label: "Merchantia", icon: "▣" },
+  { id: "billing", label: "Billing Export", icon: "📥" },
 ];
 
 export default function App() {
@@ -614,16 +727,23 @@ export default function App() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
       <style>{`
+        :root {
+          --tb-red: #0057B8;
+          --tb-red-deep: #1E3A8A;
+          --tb-charcoal: #121212;
+          --tb-surface: rgba(255,255,255,0.03);
+        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #060b14; }
+        body {
+          background: radial-gradient(circle at 5% 5%, rgba(0,87,184,0.18), rgba(18,18,18,0.98) 35%), var(--tb-charcoal);
+        }
         ::-webkit-scrollbar { width: 4px; } 
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.2); border-radius: 2px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,87,184,0.2); border-radius: 2px; }
         input::placeholder { color: #333 !important; }
       `}</style>
-      <div style={{ display: "flex", minHeight: "100vh", background: "#060b14", color: "#fff", fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ display: "flex", minHeight: "100vh", background: "#121212", color: "#fff", fontFamily: "'IBM Plex Sans', sans-serif" }}>
         
         {/* Sidebar */}
         <div style={{ width: 220, background: "rgba(255,255,255,0.02)", borderRight: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", padding: "28px 0", position: "fixed", height: "100vh", top: 0, left: 0 }}>
@@ -632,7 +752,7 @@ export default function App() {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 34, height: 34, borderRadius: 10, background: `linear-gradient(135deg, ${CYAN}, ${CYAN2})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 900, color: "#000" }}>T</div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: "'Syne', sans-serif", lineHeight: 1 }}>TatraPay+</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: "'Manrope', sans-serif", lineHeight: 1 }}>tatrapay+</div>
                 <div style={{ fontSize: 10, color: "#333", letterSpacing: 1, marginTop: 2 }}>USAGE ENGINE</div>
               </div>
             </div>
@@ -643,15 +763,15 @@ export default function App() {
             {NAV.map(n => (
               <button key={n.id} onClick={() => setView(n.id)} style={{
                 display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 9,
-                background: view === n.id ? `rgba(0,212,255,0.1)` : "transparent",
-                border: `1px solid ${view === n.id ? "rgba(0,212,255,0.2)" : "transparent"}`,
+                background: view === n.id ? `rgba(0,87,184,0.1)` : "transparent",
+                border: `1px solid ${view === n.id ? "rgba(0,87,184,0.2)" : "transparent"}`,
                 color: view === n.id ? CYAN : "#444", fontSize: 13, cursor: "pointer",
-                fontFamily: "'DM Sans', sans-serif", fontWeight: view === n.id ? 600 : 400,
+                fontFamily: "'IBM Plex Sans', sans-serif", fontWeight: view === n.id ? 600 : 400,
                 transition: "all 0.15s", textAlign: "left",
               }}>
                 <span style={{ fontSize: 14, opacity: 0.8 }}>{n.icon}</span>
                 {n.label}
-                {n.id === "alerts" && <span style={{ marginLeft: "auto", background: DANGER, color: "#fff", borderRadius: 4, fontSize: 10, padding: "1px 6px", fontFamily: "'Space Mono', monospace" }}>2</span>}
+                {n.id === "alerts" && <span style={{ marginLeft: "auto", background: DANGER, color: "#fff", borderRadius: 4, fontSize: 10, padding: "1px 6px", fontFamily: "'IBM Plex Mono', monospace" }}>2</span>}
               </button>
             ))}
           </nav>
@@ -659,10 +779,10 @@ export default function App() {
           {/* Bottom */}
           <div style={{ padding: "20px 16px 0", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 8px" }}>
-              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg, #7c6fff, #00d4ff)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>A</div>
+              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg, #4a4a4a, #0057B8)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>A</div>
               <div>
                 <div style={{ fontSize: 12, color: "#ccc" }}>Admin</div>
-                <div style={{ fontSize: 10, color: "#444" }}>TatraPay+ GW</div>
+                <div style={{ fontSize: 10, color: "#444" }}>tatrapay+ GW</div>
               </div>
             </div>
           </div>
@@ -672,11 +792,11 @@ export default function App() {
         <div style={{ marginLeft: 220, flex: 1, padding: "36px 40px", overflowY: "auto", minHeight: "100vh" }}>
           {/* Topbar */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 36, gap: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(0,255,136,0.08)", border: "1px solid rgba(0,255,136,0.2)", borderRadius: 8, padding: "7px 14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(0,87,184,0.08)", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, padding: "7px 14px" }}>
               <div style={{ width: 6, height: 6, borderRadius: "50%", background: CYAN2, boxShadow: `0 0 8px ${CYAN2}` }} />
               <span style={{ fontSize: 12, color: CYAN2 }}>Systém online</span>
             </div>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: "#333" }}>API v2.4.1</div>
+            <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#333" }}>API v2.4.1</div>
           </div>
 
           {view === "dashboard" && <Dashboard />}
@@ -685,6 +805,7 @@ export default function App() {
           {view === "pricing" && <PricingView />}
           {view === "alerts" && <AlertsView />}
           {view === "merchants" && <MerchantsView />}
+          {view === "billing" && <BillingExportView />}
         </div>
       </div>
 

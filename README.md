@@ -1,4 +1,4 @@
-Nižšie ti dávam profesionálny návrh riešenia usage metering systému, ktorý budeš poskytovať merchantom ako súčasť platobnej brány TatraPay+. Cieľom je, aby obchodníci mohli vytvárať svoje vlastné usage-based produkty (rovnako ako Stripe Billing), pričom TatraPay+ im poskytne infraštruktúru, spracovanie eventov a billing podklady.
+Nižšie ti dávam profesionálny návrh riešenia usage metering systému, ktorý budeš poskytovať merchantom ako súčasť platobnej brány tatrapay+. Cieľom je, aby obchodníci mohli vytvárať svoje vlastné usage-based produkty (rovnako ako Stripe Billing), pričom tatrapay+ im poskytne infraštruktúru, spracovanie eventov a billing podklady.
 Použité fakty o Stripe mete¬roch vychádzajú zo zdrojov:
 – definícia metra (event_name, aggregation, meter events)
 – meter resource – parametre a účel ✦ meter creation, formula (sum/count)
@@ -6,7 +6,7 @@ Použité fakty o Stripe mete¬roch vychádzajú zo zdrojov:
 – monitoring usage a prahy využitia [docs.stripe.com] [deepwiki.com] [openmeter.io] [docs.stripe.com]
 ________________________________________
 ✅ 1. Definovanie problému / Hypotéza
-TatraPay+ chce poskytovať usage metering platformu pre merchantov, aby si mohli tvorbu vlastných subscription a usage-based plánov nastaviť priamo v admin rozhraní.
+tatrapay+ chce poskytovať usage metering platformu pre merchantov, aby si mohli tvorbu vlastných subscription a usage-based plánov nastaviť priamo v admin rozhraní.
 Hypotéza:
 •	Merchanti potrebujú flexibilne účtovať svojich zákazníkov podľa spotreby: počet API volaní, počet transakcií, počet akcií v ich SaaS, počet reportov, použité dáta, kapacity, limity atď.
 •	Stripe používa koncept Meter, ktorý definuje čo sa meria, ako sa agreguje a ako sa fakturuje. Rovnaký model môžeš replikovať a ponúknuť ako službu. [docs.stripe.com]
@@ -19,9 +19,9 @@ Vytvoriť Usage Metering Engine, ktorý umožňuje:
 4.	Umožniť merchantovi vytvoriť ceny, tarify, limity a upozornenia viazané na jednotlivé metre.
 5.	Exportovať agregované dáta pre merchant billing (alebo ich fakturovať automaticky).
 Dôležité:
-Toto nie je billing za TatraPay+, ale služba pre obchodníkov, ktorú použijú na vlastné fakturovanie ich zákazníkov.
+Toto nie je billing za tatrapay+, ale služba pre obchodníkov, ktorú použijú na vlastné fakturovanie ich zákazníkov.
 ________________________________________
-✅ 3. Aké metre by TatraPay+ mala poskytovať (podľa Stripe vzoru)
+✅ 3. Aké metre by tatrapay+ mala poskytovať (podľa Stripe vzoru)
 Toto sú typové metre, ktoré poskytovateľ brány ponúkne pre merchantov ako stavebný kameň.
 Merchant si môže konfigurovať, ktoré z nich použije vo svojom SaaS produkte.
 ________________________________________
@@ -58,7 +58,7 @@ o	merchant si môže definovať interné kredity (napr. 1 kredit = 1 min AI gene
 ________________________________________
 C. Event-driven metre (flexibilné custom eventy)
 Stripe podporuje libovolný event_name, ktorý si definujete. [deepwiki.com]
-TatraPay+ poskytne merchantovi:
+tatrapay+ poskytne merchantovi:
 •	meter pre ľubovoľný custom event, ktorý merchant nahlási cez API
 •	agregácia podľa count alebo sum
 •	možnosť pridať dimenzie: endpoint, typ zákazníka, segment
@@ -146,7 +146,7 @@ Admin umožní:
 •	graf spotreby
 •	export histórie usage eventov
 ________________________________________
-✅ 6. Výsledná architektúra TatraPay+ Usage Platform
+✅ 6. Výsledná architektúra tatrapay+ Usage Platform
 Komponenty:
 1.	Meter Registry
 o	správa meter definícií merchantov (event_name, aggregation formula).
@@ -171,3 +171,103 @@ Ak chceš, dopracujem ešte:
 ✅ API špecifikáciu /usage-events, /meters, /prices
 ✅ návrh databázových tabuliek
 ✅ návrh UI pre merchant admin
+
+## Production Deployment (Container + Nginx)
+
+This repository now includes a production container image for static deployment with hardened HTTP headers.
+
+### Build and run locally
+
+```bash
+npm run docker:build
+npm run docker:run
+```
+
+App is served on `http://localhost:8080`.
+
+### Security headers enforced at server level
+
+- Content-Security-Policy
+- Strict-Transport-Security
+- X-Content-Type-Options
+- X-Frame-Options
+- Referrer-Policy
+- Permissions-Policy
+- Cross-Origin-Opener-Policy
+- Cross-Origin-Resource-Policy
+
+### Verify headers
+
+```bash
+curl -sSI http://localhost:8080/ | grep -Ei "content-security-policy|strict-transport-security|x-content-type-options|x-frame-options|referrer-policy|permissions-policy|cross-origin-opener-policy|cross-origin-resource-policy"
+```
+
+### Deploy to production
+
+1. Build container image in CI using `Dockerfile`.
+2. Push image to your registry.
+3. Deploy to your orchestrator (Kubernetes, ECS, or similar) and expose over HTTPS.
+4. Ensure TLS termination is enabled in front of the container.
+
+## Kubernetes Deployment (Production)
+
+Kubernetes manifests are in `k8s/` and include:
+
+- Namespace
+- Deployment (2 replicas, probes, hardened container security context)
+- Service (ClusterIP)
+- Ingress (TLS + redirect + HSTS)
+
+### 1. Build and push image
+
+```bash
+export IMAGE=ghcr.io/lukasokal/usagemeterportal:$(git rev-parse --short HEAD)
+docker build -t "$IMAGE" .
+docker push "$IMAGE"
+```
+
+### 2. Set your image tag in deployment
+
+Update the image field in `k8s/deployment.yaml` to your pushed tag.
+
+### 3. Set your production hostname and TLS secret
+
+Update these fields in `k8s/ingress.yaml`:
+
+- host: `usagemeterportal.example.com`
+- secretName: `usagemeterportal-tls`
+
+### 4. Deploy
+
+```bash
+kubectl apply -k k8s
+kubectl -n usagemeterportal rollout status deploy/usagemeterportal
+```
+
+### 5. Verify runtime headers in cluster
+
+```bash
+kubectl -n usagemeterportal port-forward svc/usagemeterportal 8080:80
+curl -sSI http://127.0.0.1:8080/ | grep -Ei "content-security-policy|strict-transport-security|x-content-type-options|x-frame-options|referrer-policy|permissions-policy|cross-origin-opener-policy|cross-origin-resource-policy"
+```
+
+## GitHub Actions CD (GHCR -> Kubernetes)
+
+Workflow file: `.github/workflows/deploy-k8s.yml`
+
+Trigger:
+
+- Push to `main`
+- Manual dispatch
+
+Required repository secret:
+
+- `KUBE_CONFIG_DATA`: base64-encoded kubeconfig content.
+
+How to create `KUBE_CONFIG_DATA`:
+
+```bash
+base64 -w 0 ~/.kube/config
+```
+
+Copy the output into repository secret `KUBE_CONFIG_DATA`.
