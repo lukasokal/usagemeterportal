@@ -1,5 +1,5 @@
 {
-  "name": "tatrapay-usage-portal",
+  "name": "tatrapay-plus-usage-portal",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "docker:build": "docker build -t tatrapay-usage-portal:latest .",
-    "docker:run": "docker run --rm -p 8080:8080 tatrapay-usage-portal:latest"
+    "docker:build": "docker build -t tatrapay-plus-usage-portal:latest .",
+    "docker:run": "docker run --rm -p 8080:8080 tatrapay-plus-usage-portal:latest"
   },
   "dependencies": {
     "react": "^18.3.1",

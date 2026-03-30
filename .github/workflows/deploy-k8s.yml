@@ -15,9 +15,15 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   K8S_NAMESPACE: usagemeterportal
 
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
 
     steps:
       - name: Checkout
@@ -44,6 +50,10 @@ jobs:
 
       - name: Set up kubectl
         uses: azure/setup-kubectl@v4
+
+      - name: Validate required secrets
+        run: |
+          test -n "${{ secrets.KUBE_CONFIG_DATA }}" || (echo "Missing KUBE_CONFIG_DATA secret" && exit 1)
 
       - name: Configure kubeconfig
         run: |

@@ -54,8 +54,8 @@ const MERCHANTS = [
   { id: "mer5", name: "ComputeHub", meters: 1, events_today: 31_000, plan: "Enterprise" },
 ];
 
-const CYAN = "#E2001A";
-const CYAN2 = "#9A1B30";
+const CYAN = "#0057B8";
+const CYAN2 = "#1E3A8A";
 const WARN = "#C4930A";
 const DANGER = "#7F0013";
 const PIE_COLORS = [CYAN, CYAN2, "#4a4a4a", WARN, "#707070"];
@@ -107,7 +107,7 @@ function SectionHeader({ title, sub, action }) {
 function Btn({ children, variant = "ghost", onClick, small, disabled = false }) {
   const styles = {
     primary: { background: CYAN, color: "#fff", border: `1px solid ${CYAN}`, fontWeight: 700 },
-    ghost: { background: "transparent", color: CYAN, border: `1px solid rgba(226,0,26,0.3)` },
+    ghost: { background: "transparent", color: CYAN, border: `1px solid rgba(0,87,184,0.3)` },
     danger: { background: "transparent", color: DANGER, border: `1px solid rgba(255,59,92,0.3)` },
   };
   return (
@@ -178,7 +178,7 @@ function Dashboard() {
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
               <XAxis dataKey="day" tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
-              <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(226,0,26,0.2)", borderRadius: 8, color: "#fff" }} />
+              <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, color: "#fff" }} />
               <Area type="monotone" dataKey="events" stroke={CYAN} strokeWidth={2} fill="url(#evGrad)" />
             </AreaChart>
           </ResponsiveContainer>
@@ -191,7 +191,7 @@ function Dashboard() {
               <Pie data={PIE_DATA} cx="50%" cy="50%" innerRadius={45} outerRadius={72} paddingAngle={3} dataKey="value">
                 {PIE_DATA.map((_, i) => <Cell key={i} fill={PIE_COLORS[i]} />)}
               </Pie>
-              <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(226,0,26,0.2)", borderRadius: 8, color: "#fff" }} />
+              <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, color: "#fff" }} />
             </PieChart>
           </ResponsiveContainer>
           <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
@@ -265,8 +265,8 @@ function MetersView({ onNewMeter }) {
           return (
             <div key={m.id} onClick={() => setSelected(m.id === selected ? null : m.id)}
               style={{
-                background: selected === m.id ? "rgba(226,0,26,0.06)" : "rgba(255,255,255,0.03)",
-                border: `1px solid ${selected === m.id ? "rgba(226,0,26,0.3)" : "rgba(255,255,255,0.07)"}`,
+                background: selected === m.id ? "rgba(0,87,184,0.06)" : "rgba(255,255,255,0.03)",
+                border: `1px solid ${selected === m.id ? "rgba(0,87,184,0.3)" : "rgba(255,255,255,0.07)"}`,
                 borderRadius: 12, padding: 22, cursor: "pointer", transition: "all 0.2s"
               }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
@@ -368,7 +368,7 @@ function EventsView() {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
             <XAxis dataKey="day" tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(226,0,26,0.2)", borderRadius: 8, color: "#fff" }} />
+            <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, color: "#fff" }} />
             <Bar dataKey="events" fill={CYAN} radius={[4, 4, 0, 0]} opacity={0.8} />
           </BarChart>
         </ResponsiveContainer>
@@ -414,7 +414,7 @@ function PricingView() {
             <div style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: "'Manrope', sans-serif" }}>Data Transfer – Pay-as-you-go</div>
             <div style={{ fontSize: 12, color: "#555", marginTop: 4 }}>StreamCore Ltd · SUM aggregation</div>
           </div>
-          <div style={{ background: "rgba(226,0,26,0.04)", border: "1px solid rgba(226,0,26,0.1)", borderRadius: 10, padding: 20, textAlign: "center" }}>
+          <div style={{ background: "rgba(0,87,184,0.04)", border: "1px solid rgba(0,87,184,0.1)", borderRadius: 10, padding: 20, textAlign: "center" }}>
             <div style={{ fontSize: 11, color: "#555", marginBottom: 8 }}>Cena za GB</div>
             <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 36, fontWeight: 700, color: CYAN }}>0.012 €</div>
             <div style={{ fontSize: 11, color: "#444", marginTop: 8 }}>bez limitu · žiadny free tier</div>
@@ -441,7 +441,7 @@ function PricingView() {
             { pack: "Growth", credits: "50 000", price: "79 €", highlight: true },
             { pack: "Scale", credits: "200 000", price: "249 €", highlight: false },
           ].map((p, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 8, background: p.highlight ? "rgba(226,0,26,0.08)" : "transparent", border: p.highlight ? `1px solid rgba(226,0,26,0.2)` : "1px solid transparent", marginBottom: 6 }}>
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", borderRadius: 8, background: p.highlight ? "rgba(0,87,184,0.08)" : "transparent", border: p.highlight ? `1px solid rgba(0,87,184,0.2)` : "1px solid transparent", marginBottom: 6 }}>
               <div>
                 <div style={{ fontSize: 12, color: p.highlight ? CYAN : "#ccc" }}>{p.pack}</div>
                 <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, color: "#555" }}>{p.credits} kreditov</div>
@@ -462,7 +462,7 @@ function PricingView() {
               <div style={{ fontSize: 11, color: "#555", marginBottom: 6 }}>Mesačný paušál</div>
               <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, color: "#fff" }}>29 €</div>
             </div>
-            <div style={{ flex: 1, background: "rgba(226,0,26,0.04)", border: "1px solid rgba(226,0,26,0.1)", borderRadius: 8, padding: 16, textAlign: "center" }}>
+            <div style={{ flex: 1, background: "rgba(0,87,184,0.04)", border: "1px solid rgba(0,87,184,0.1)", borderRadius: 8, padding: 16, textAlign: "center" }}>
               <div style={{ fontSize: 11, color: "#555", marginBottom: 6 }}>Nad 1 000 ks</div>
               <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 22, color: CYAN }}>0.02 €/ks</div>
             </div>
@@ -515,7 +515,7 @@ function AlertsView() {
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
             <XAxis dataKey="day" tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill: "#555", fontSize: 11 }} axisLine={false} tickLine={false} />
-            <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(226,0,26,0.2)", borderRadius: 8, color: "#fff" }} />
+            <Tooltip contentStyle={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, color: "#fff" }} />
             <Line type="monotone" dataKey="volume" stroke={WARN} strokeWidth={2} dot={false} name="CPU Time" />
             <Line type="monotone" dataKey="threshold" stroke={DANGER} strokeWidth={1} strokeDasharray="5 5" dot={false} name="Threshold" />
           </LineChart>
@@ -578,7 +578,7 @@ function NewMeterModal({ onClose }) {
   );
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.7)", backdropFilter: "blur(6px)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div style={{ background: "#181818", border: "1px solid rgba(226,0,26,0.2)", borderRadius: 16, padding: 36, width: 480, position: "relative" }}>
+      <div style={{ background: "#181818", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 16, padding: 36, width: 480, position: "relative" }}>
         <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, ${CYAN}, ${CYAN2})`, borderRadius: "16px 16px 0 0" }} />
         <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", fontFamily: "'Manrope', sans-serif", marginBottom: 4 }}>Nový meter</div>
         <div style={{ fontSize: 12, color: "#555", marginBottom: 28 }}>Definujte metriku pre fakturáciu</div>
@@ -693,7 +693,7 @@ function BillingExportView() {
             <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: "#888", fontSize: 12 }}>{r.rate}</span>
             <span style={{ fontFamily: "'IBM Plex Mono', monospace", color: CYAN2, fontSize: 13, fontWeight: 700 }}>{r.total}</span>
             <button style={{
-              background: "transparent", border: `1px solid rgba(226,0,26,0.3)`, color: CYAN,
+              background: "transparent", border: `1px solid rgba(0,87,184,0.3)`, color: CYAN,
               borderRadius: 7, padding: "5px 12px", fontSize: 11, cursor: "pointer",
               fontFamily: "'IBM Plex Sans', sans-serif",
             }}>{format}</button>
@@ -702,7 +702,7 @@ function BillingExportView() {
       </div>
 
       {/* Total footer */}
-      <div style={{ background: "rgba(226,0,26,0.04)", border: "1px solid rgba(226,0,26,0.15)", borderRadius: 10, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ background: "rgba(0,87,184,0.04)", border: "1px solid rgba(0,87,184,0.15)", borderRadius: 10, padding: "16px 20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: 13, color: "#888" }}>Celková fakturovaná suma za obdobie {period}</span>
         <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 24, fontWeight: 700, color: CYAN }}>{total}</span>
       </div>
@@ -729,18 +729,18 @@ export default function App() {
     <>
       <style>{`
         :root {
-          --tb-red: #E2001A;
-          --tb-red-deep: #9A1B30;
+          --tb-red: #0057B8;
+          --tb-red-deep: #1E3A8A;
           --tb-charcoal: #121212;
           --tb-surface: rgba(255,255,255,0.03);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-          background: radial-gradient(circle at 5% 5%, rgba(226,0,26,0.18), rgba(18,18,18,0.98) 35%), var(--tb-charcoal);
+          background: radial-gradient(circle at 5% 5%, rgba(0,87,184,0.18), rgba(18,18,18,0.98) 35%), var(--tb-charcoal);
         }
         ::-webkit-scrollbar { width: 4px; } 
         ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: rgba(226,0,26,0.2); border-radius: 2px; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,87,184,0.2); border-radius: 2px; }
         input::placeholder { color: #333 !important; }
       `}</style>
       <div style={{ display: "flex", minHeight: "100vh", background: "#121212", color: "#fff", fontFamily: "'IBM Plex Sans', sans-serif" }}>
@@ -752,7 +752,7 @@ export default function App() {
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <div style={{ width: 34, height: 34, borderRadius: 10, background: `linear-gradient(135deg, ${CYAN}, ${CYAN2})`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 900, color: "#000" }}>T</div>
               <div>
-                <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: "'Manrope', sans-serif", lineHeight: 1 }}>TatraPay+</div>
+                <div style={{ fontSize: 14, fontWeight: 800, color: "#fff", fontFamily: "'Manrope', sans-serif", lineHeight: 1 }}>tatrapay+</div>
                 <div style={{ fontSize: 10, color: "#333", letterSpacing: 1, marginTop: 2 }}>USAGE ENGINE</div>
               </div>
             </div>
@@ -763,8 +763,8 @@ export default function App() {
             {NAV.map(n => (
               <button key={n.id} onClick={() => setView(n.id)} style={{
                 display: "flex", alignItems: "center", gap: 12, padding: "11px 14px", borderRadius: 9,
-                background: view === n.id ? `rgba(226,0,26,0.1)` : "transparent",
-                border: `1px solid ${view === n.id ? "rgba(226,0,26,0.2)" : "transparent"}`,
+                background: view === n.id ? `rgba(0,87,184,0.1)` : "transparent",
+                border: `1px solid ${view === n.id ? "rgba(0,87,184,0.2)" : "transparent"}`,
                 color: view === n.id ? CYAN : "#444", fontSize: 13, cursor: "pointer",
                 fontFamily: "'IBM Plex Sans', sans-serif", fontWeight: view === n.id ? 600 : 400,
                 transition: "all 0.15s", textAlign: "left",
@@ -779,10 +779,10 @@ export default function App() {
           {/* Bottom */}
           <div style={{ padding: "20px 16px 0", borderTop: "1px solid rgba(255,255,255,0.05)", marginTop: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "0 8px" }}>
-              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg, #4a4a4a, #E2001A)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>A</div>
+              <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg, #4a4a4a, #0057B8)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700 }}>A</div>
               <div>
                 <div style={{ fontSize: 12, color: "#ccc" }}>Admin</div>
-                <div style={{ fontSize: 10, color: "#444" }}>TatraPay+ GW</div>
+                <div style={{ fontSize: 10, color: "#444" }}>tatrapay+ GW</div>
               </div>
             </div>
           </div>
@@ -792,7 +792,7 @@ export default function App() {
         <div style={{ marginLeft: 220, flex: 1, padding: "36px 40px", overflowY: "auto", minHeight: "100vh" }}>
           {/* Topbar */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", marginBottom: 36, gap: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(226,0,26,0.08)", border: "1px solid rgba(226,0,26,0.2)", borderRadius: 8, padding: "7px 14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, background: "rgba(0,87,184,0.08)", border: "1px solid rgba(0,87,184,0.2)", borderRadius: 8, padding: "7px 14px" }}>
               <div style={{ width: 6, height: 6, borderRadius: "50%", background: CYAN2, boxShadow: `0 0 8px ${CYAN2}` }} />
               <span style={{ fontSize: 12, color: CYAN2 }}>Systém online</span>
             </div>
