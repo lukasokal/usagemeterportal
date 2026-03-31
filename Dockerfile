@@ -1,5 +1,5 @@
 # Multi-stage production build for a static Vite app
-FROM node:25-alpine AS builder
+FROM node:22-alpine AS builder
 WORKDIR /app
 
 COPY package*.json ./
